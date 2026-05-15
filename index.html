@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Las Recetas de Alba 🌹</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blood:      #8B0000;
+      --crimson:    #C41E3A;
+      --gold:       #C9A84C;
+      --gold-light: #E8C97A;
+      --dark:       #0D0208;
+      --dark-2:     #1A0812;
+      --text:       #F5E6D3;
+      --muted:      #9A7A6A;
+    }
+
+    /* ─── Base ────────────────────────────────────────────── */
+    body {
+      min-height: 100vh;
+      font-family: 'EB Garamond', Georgia, serif;
+      background:
+        radial-gradient(ellipse at 20% 0%,  rgba(139,0,0,.22)  0%, transparent 45%),
+        radial-gradient(ellipse at 80% 100%, rgba(100,0,50,.18) 0%, transparent 40%),
+        linear-gradient(180deg, #1A0812 0%, #0D0208 60%);
+      color: var(--text);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ─── Estrellas ────────────────────────────────────────── */
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle linear infinite;
+    }
+    @keyframes twinkle {
+      0%,100% { opacity: .8; }
+      50%      { opacity: .1; }
+    }
+
+    /* ─── Murciélagos flotantes ────────────────────────────── */
+    #bats {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bat {
+      position: absolute;
+      animation: batFloat ease-in-out infinite;
+      opacity: .28;
+      user-select: none;
+    }
+    @keyframes batFloat {
+      0%   { transform: translate(0,0)       rotate(0deg);   }
+      33%  { transform: translate(22px,-18px) rotate(8deg);  }
+      66%  { transform: translate(-14px,12px) rotate(-6deg); }
+      100% { transform: translate(0,0)       rotate(0deg);   }
+    }
+
+    /* ─── Wrapper ──────────────────────────────────────────── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── Badge de versión ─────────────────────────────────── */
+    .version-badge {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      z-index: 50;
+      border: 1px solid;
+      backdrop-filter: blur(8px);
+    }
+    .badge-desktop { background: rgba(201,168,76,.12); border-color: rgba(201,168,76,.38); color: var(--gold-light); }
+    .badge-mobile  { background: rgba(196,30,58,.14);  border-color: rgba(196,30,58,.40);  color: #F08090; }
+
+    /* Visibilidad responsive */
+    .show-desktop { display: block; }
+    .show-mobile  { display: none;  }
+
+    /* ─── HEADER ───────────────────────────────────────────── */
+    header {
+      text-align: center;
+      padding: 72px 24px 40px;
+    }
+    .candles {
+      font-size: 28px;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      animation: flicker 4s ease-in-out infinite alternate;
+    }
+    @keyframes flicker {
+      0%,88%  { opacity: .75; }
+      90%     { opacity: .35; }
+      92%     { opacity: .72; }
+      96%     { opacity: .30; }
+      100%    { opacity: .78; }
+    }
+    .site-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(34px, 8vw, 78px);
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 48px rgba(201,168,76,.55), 0 5px 0 rgba(0,0,0,.6);
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+    .site-tagline {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(11px, 1.8vw, 16px);
+      letter-spacing: .22em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+    .ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--gold);
+      opacity: .4;
+      margin: 0 auto;
+      max-width: 360px;
+    }
+    .ornament::before, .ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .ornament::after { background: linear-gradient(90deg, var(--gold), transparent); }
+
+    /* ─── CONTENIDO PRINCIPAL ──────────────────────────────── */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 20px 48px;
+    }
+
+    /* Tarjeta principal */
+    .card {
+      background: linear-gradient(160deg, rgba(35,15,26,.95), rgba(13,2,8,.98));
+      border: 1px solid rgba(201,168,76,.22);
+      border-radius: 26px;
+      padding: 44px 40px;
+      box-shadow:
+        0 0 70px rgba(139,0,0,.15),
+        0 32px 80px rgba(0,0,0,.55),
+        inset 0 0 30px rgba(255,255,255,.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: '🌹';
+      position: absolute;
+      right: -14px; top: -14px;
+      font-size: 140px;
+      opacity: .035;
+      transform: rotate(25deg);
+      pointer-events: none;
+    }
+
+    .greeting {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(24px, 5.5vw, 46px);
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 22px;
+    }
+    .greeting .name {
+      color: var(--gold);
+      text-shadow: 0 0 32px rgba(201,168,76,.5), 0 3px 0 rgba(0,0,0,.5);
+    }
+
+    .intro {
+      font-size: clamp(15px, 2.2vw, 19px);
+      line-height: 1.75;
+      color: rgba(245,230,211,.88);
+      margin-bottom: 16px;
+    }
+    .intro em { color: var(--gold-light); font-style: italic; }
+
+    /* Separador interno */
+    .inner-sep {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,.25), transparent);
+      margin: 28px 0;
+    }
+
+    /* Zona recetas */
+    .recipe-zone {
+      background: rgba(139,0,0,.09);
+      border: 1px dashed rgba(201,168,76,.28);
+      border-radius: 18px;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .zone-icon {
+      font-size: 52px;
+      display: block;
+      margin-bottom: 12px;
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.09); }
+    }
+    .recipe-zone h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .recipe-zone p {
+      font-size: clamp(13px, 1.8vw, 16px);
+      color: var(--muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Zona recetas: margen superior cuando está fuera del grid */
+    .recipe-zone { margin-top: 24px; }
+
+    /* Cita vampírica */
+    .quote-block {
+      margin-top: 0;
+      padding: 20px 22px;
+      background: linear-gradient(135deg, rgba(139,0,0,.14), rgba(26,8,18,.45));
+      border-left: 3px solid var(--crimson);
+      border-radius: 0 16px 16px 0;
+    }
+    .quote-text {
+      font-size: clamp(14px, 1.9vw, 17px);
+      font-style: italic;
+      line-height: 1.65;
+      color: rgba(245,230,211,.80);
+      margin-bottom: 10px;
+    }
+    .quote-attr {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--crimson);
+    }
+
+    /* ─── LAYOUT BASE ─────────────────────────────────────── */
+    .card-body-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ─── FOOTER ───────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 20px 24px 28px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: .14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: .55;
+      border-top: 1px solid rgba(201,168,76,.07);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE — DESKTOP / IPAD (≥ 769 px)
+    ══════════════════════════════════════════════════════════ */
+    @media (min-width: 769px) {
+      header { padding: 90px 40px 50px; }
+
+      .card { padding: 56px 60px; }
+
+      /* Dos columnas reales: texto a la izquierda, cita a la derecha */
+      .card-body-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+        align-items: stretch;
+        margin-bottom: 0;
+      }
+
+      /* La columna derecha centra verticalmente la cita */
+      .quote-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* La cita ocupa toda la altura de su columna */
+      .quote-block {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* La zona de recetas queda fuera del grid, a ancho completo */
+      .recipe-zone { margin-top: 32px; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE — MÓVIL (≤ 768 px)
+    ══════════════════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .show-desktop { display: none;  }
+      .show-mobile  { display: block; }
+
+      header { padding: 54px 18px 30px; }
+      .candles { font-size: 22px; gap: 10px; }
+
+      .card { padding: 26px 20px; border-radius: 18px; }
+      .card::after { font-size: 100px; }
+
+      .inner-sep { margin: 20px 0; }
+
+      .recipe-zone { padding: 24px 16px; border-radius: 14px; }
+      .zone-icon { font-size: 40px; }
+
+      .quote-block { padding: 16px 16px; margin-top: 18px; }
+
+      footer { font-size: 9px; padding: 16px 16px 24px; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE — MÓVIL MUY PEQUEÑO (≤ 380 px)
+    ══════════════════════════════════════════════════════════ */
+    @media (max-width: 380px) {
+      .card { padding: 22px 16px; }
+      main  { padding: 0 12px 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fondo estrellado -->
+  <div id="stars"></div>
+
+  <!-- Murciélagos / rosas flotantes -->
+  <div id="bats"></div>
+
+  <!-- Badge de versión -->
+  <div class="version-badge badge-desktop show-desktop">💻 Versión para iPad y PC</div>
+  <div class="version-badge badge-mobile  show-mobile" >📱 Versión para móvil</div>
+
+  <div class="wrapper">
+
+    <!-- ─── CABECERA ─────────────────────────────────── -->
+    <header>
+      <div class="candles">🕯️ 🌹 🦇 🌹 🕯️</div>
+      <h1 class="site-title">Las Recetas<br>de Alba</h1>
+      <p class="site-tagline">✦ Un libro de cocina muy especial ✦</p>
+      <div class="ornament">🌹</div>
+    </header>
+
+    <!-- ─── CONTENIDO ────────────────────────────────── -->
+    <main>
+      <div class="card">
+
+        <h2 class="greeting">¡Hola, <span class="name">Alba</span>! 🌙</h2>
+
+        <div class="card-body-grid">
+
+          <!-- Columna izquierda: texto de bienvenida -->
+          <div class="intro-col">
+            <p class="intro">
+              Este es el sitio donde puedes meter tu <em>web de recetas</em>
+              que tienes que hacer para tu proyecto personal del colegio.
+            </p>
+            <p class="intro" style="margin-top:14px;">
+              Aquí tendrás tu propio espacio en internet — como un grimorio secreto,
+              pero en lugar de hechizos, guardará <em>tus mejores creaciones</em> en la cocina. 🍳✨
+            </p>
+          </div>
+
+          <!-- Columna derecha: cita vampírica -->
+          <div class="quote-col">
+            <div class="quote-block">
+              <p class="quote-text">
+                "Damon diría que cocinar es aburrido... pero Stefan te prepararía
+                su receta favorita solo para impresionarte. Tú decides quién tiene razón. 🧄"
+              </p>
+              <p class="quote-attr">— Un guiño de tu papá · Mystic Falls, 2026 🌹</p>
+            </div>
+          </div>
+
+        </div><!-- /card-body-grid -->
+
+        <!-- Zona recetas: fuera del grid, ocupa todo el ancho de la tarjeta -->
+        <div class="recipe-zone">
+          <span class="zone-icon">📖</span>
+          <h3>Aquí irán tus recetas</h3>
+          <p>
+            Pronto este espacio se llenará con todas tus creaciones culinarias.<br>
+            ¡Tu libro de recetas está esperando su primera historia!
+          </p>
+        </div>
+
+      </div><!-- /card -->
+    </main>
+
+    <!-- ─── PIE ───────────────────────────────────────── -->
+    <footer>
+      🦇 &nbsp; Hecho con magia &nbsp;·&nbsp; Proyecto de Alba &nbsp;·&nbsp; 2026 &nbsp; 🦇
+    </footer>
+
+  </div><!-- /wrapper -->
+
+  <script>
+    // Estrellas generadas dinámicamente
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 90; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const sz = Math.random() * 2.2 + 0.4;
+      s.style.cssText = `
+        width:${sz}px; height:${sz}px;
+        top:${Math.random()*100}%; left:${Math.random()*100}%;
+        animation-duration:${Math.random()*3+2}s;
+        animation-delay:${Math.random()*5}s;
+        opacity:${Math.random()*.6+.1};
+      `;
+      starsEl.appendChild(s);
+    }
+
+    // Elementos flotantes (murciélagos + rosas)
+    const batsEl   = document.getElementById('bats');
+    const symbols  = ['🦇','🌹','🕯️','🦇','🌹','🦇'];
+    for (let i = 0; i < 10; i++) {
+      const b = document.createElement('div');
+      b.className = 'bat';
+      b.textContent = symbols[i % symbols.length];
+      b.style.cssText = `
+        top:${Math.random()*90}%; left:${Math.random()*95}%;
+        font-size:${Math.random()*14+10}px;
+        animation-duration:${Math.random()*7+5}s;
+        animation-delay:${Math.random()*6}s;
+      `;
+      batsEl.appendChild(b);
+    }
+  </script>
+</body>
+</html>
