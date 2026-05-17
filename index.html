@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="theme-color" content="#f4f8f7">
+<title>Las recetas de la abuela · por Chef Alba</title>
+<meta name="description" content="Recetario familiar digital con las recetas tradicionales de la abuela, valoradas y comentadas por Chef Alba">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  /* Sobreescribe hero-sub-top: más grande y con icono al lado */
+  .hero-sub-top {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-size: clamp(20px, 3.5vw, 28px) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    color: #4a7771 !important;
+    margin-bottom: 0.5rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .hero-icon {
+    font-size: 1.1em;
+    line-height: 1;
+    display: inline-block;
+    transform: translateY(-1px);
+  }
+  @media (max-width: 480px) {
+    .hero-sub-top {
+      font-size: 18px !important;
+      gap: 0.4rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#" class="logo-mini" onclick="resetView(event)" aria-label="Inicio">
+      <span>🍽️</span>
+    </a>
+
+    <div class="lang-switcher">
+      <button class="lang-btn active" data-lang="es" onclick="setLanguage('es')">ES</button>
+      <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-sub-top">
+        <span class="hero-icon">👩‍🍳</span>
+        <span data-i18n="hero_sub_top">Las recetas de la abuela</span>
+      </p>
+      <h1 class="hero-title" data-i18n="hero_title">por Chef Alba</h1>
+      <p class="hero-subtitle" data-i18n="hero_subtitle">383 recetas familiares con la valoración y los consejos de Chef Alba</p>
+    </div>
+  </section>
+
+  <!-- SEARCH & FILTERS -->
+  <section class="filters-section">
+    <div class="container">
+
+      <div class="search-bar">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="Buscar por nombre o ingrediente...">
+        <button class="clear-search hidden" id="clear-search" onclick="clearSearch()" aria-label="Limpiar búsqueda">×</button>
+      </div>
+
+      <div class="filter-group">
+        <p class="filter-label" data-i18n="filter_type">Tipo de plato</p>
+        <div class="tag-list" id="filters-tipo"></div>
+      </div>
+
+      <div class="filter-group">
+        <p class="filter-label" data-i18n="filter_special">Etiquetas</p>
+        <div class="tag-list" id="filters-especial"></div>
+      </div>
+
+      <div class="filter-group ratings-row">
+        <div class="rating-filter">
+          <p class="filter-label" data-i18n="filter_taste">Sabor mínimo</p>
+          <div class="star-filter" id="filter-sabor"></div>
+        </div>
+        <div class="rating-filter">
+          <p class="filter-label" data-i18n="filter_health">Saludable mínimo</p>
+          <div class="health-filter" id="filter-saludable"></div>
+        </div>
+      </div>
+
+      <div class="results-bar">
+        <span class="results-count" id="results-count">383 recetas</span>
+        <div class="results-actions">
+          <button class="text-btn" id="reset-filters" onclick="resetFilters()" data-i18n="reset">Limpiar filtros</button>
+          <select id="sort-select" onchange="applyFilters()">
+            <option value="favoritas" data-i18n="sort_fav">Favoritas de Chef Alba</option>
+            <option value="sabor" data-i18n="sort_taste">Mejor sabor</option>
+            <option value="saludable" data-i18n="sort_health">Más saludables</option>
+            <option value="az" data-i18n="sort_az">A → Z</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RECIPES GRID -->
+  <section class="recipes-section">
+    <div class="container">
+      <div class="recipes-grid" id="recipes-grid"></div>
+      <div class="empty-state hidden" id="empty-state">
+        <div class="empty-icon">🔍</div>
+        <p data-i18n="no_results">No encontramos recetas con esos filtros</p>
+        <button class="btn-primary" onclick="resetFilters()" data-i18n="reset_filters">Limpiar filtros</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- RECIPE MODAL -->
+<div class="modal-backdrop hidden" id="modal-backdrop" onclick="closeModalFromBackdrop(event)">
+  <article class="modal" id="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">×</button>
+    <div id="modal-content"></div>
+  </article>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p data-i18n="footer">Un proyecto personal de Chef Alba · Las recetas de la abuela 🍽️</p>
+  </div>
+</footer>
+
+<script src="js/firebase.js" type="module"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
